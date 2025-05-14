@@ -507,3 +507,318 @@ export const databaseDesignTemplate: WorkflowTemplate = {
     { id: "e18", source: "task-documentation", target: "end-node", animated: true, type: "default" },
   ],
 }
+
+// 系统部署流程
+export const systemDeploymentTemplate: WorkflowTemplate = {
+  id: "system-deployment",
+  name: "系统部署流程",
+  description: "完整的系统部署和发布流程，包括环境准备、部署执行和验证",
+  category: "系统架构",
+  nodes: [
+    {
+      id: "start-node",
+      type: "start",
+      position: { x: 300, y: 50 },
+      data: { label: "开始部署" },
+    },
+    {
+      id: "task-deployment-plan",
+      type: "task",
+      position: { x: 300, y: 150 },
+      data: {
+        label: "部署计划制定",
+        description: "制定详细的部署计划和时间表",
+        properties: {
+          负责人: "部署经理",
+          输出: "部署计划文档",
+        },
+      },
+    },
+    {
+      id: "task-environment-prep",
+      type: "task",
+      position: { x: 300, y: 250 },
+      data: {
+        label: "环境准备",
+        description: "准备部署环境和相关资源",
+        properties: {
+          负责人: "系统管理员",
+          内容: "服务器、网络、存储",
+        },
+      },
+    },
+    {
+      id: "task-backup",
+      type: "task",
+      position: { x: 300, y: 350 },
+      data: {
+        label: "系统备份",
+        description: "备份当前系统和数据",
+        properties: {
+          负责人: "数据库管理员",
+          内容: "数据库、配置文件、代码",
+        },
+      },
+    },
+    {
+      id: "condition-deployment-type",
+      type: "condition",
+      position: { x: 300, y: 450 },
+      data: {
+        label: "部署策略选择",
+        description: "选择适合的部署策略",
+        properties: {
+          条件: "部署类型",
+        },
+      },
+    },
+    {
+      id: "task-blue-green",
+      type: "task",
+      position: { x: 150, y: 550 },
+      data: {
+        label: "蓝绿部署",
+        description: "准备新环境并在就绪后切换流量",
+        properties: {
+          负责人: "DevOps工程师",
+          特点: "零停机时间",
+        },
+      },
+    },
+    {
+      id: "task-rolling-update",
+      type: "task",
+      position: { x: 450, y: 550 },
+      data: {
+        label: "滚动更新",
+        description: "逐步替换服务实例",
+        properties: {
+          负责人: "DevOps工程师",
+          特点: "逐步过渡",
+        },
+      },
+    },
+    {
+      id: "task-code-deployment",
+      type: "task",
+      position: { x: 300, y: 650 },
+      data: {
+        label: "代码部署",
+        description: "部署应用代码到目标环境",
+        properties: {
+          负责人: "部署工程师",
+          工具: "CI/CD工具",
+        },
+      },
+    },
+    {
+      id: "task-config-update",
+      type: "task",
+      position: { x: 300, y: 750 },
+      data: {
+        label: "配置更新",
+        description: "更新系统配置",
+        properties: {
+          负责人: "系统工程师",
+          内容: "环境变量、配置文件",
+        },
+      },
+    },
+    {
+      id: "task-db-migration",
+      type: "task",
+      position: { x: 300, y: 850 },
+      data: {
+        label: "数据库迁移",
+        description: "执行数据库架构变更和数据迁移",
+        properties: {
+          负责人: "数据库管理员",
+          工具: "迁移脚本",
+        },
+      },
+    },
+    {
+      id: "task-service-start",
+      type: "task",
+      position: { x: 300, y: 950 },
+      data: {
+        label: "服务启动",
+        description: "启动新版本的服务",
+        properties: {
+          负责人: "系统管理员",
+          顺序: "依赖优先",
+        },
+      },
+    },
+    {
+      id: "task-smoke-test",
+      type: "task",
+      position: { x: 300, y: 1050 },
+      data: {
+        label: "冒烟测试",
+        description: "执行基本功能测试验证部署",
+        properties: {
+          负责人: "测试工程师",
+          范围: "核心功能",
+        },
+      },
+    },
+    {
+      id: "condition-test-result",
+      type: "condition",
+      position: { x: 300, y: 1150 },
+      data: {
+        label: "测试结果",
+        description: "评估冒烟测试结果",
+        properties: {
+          条件: "测试通过/失败",
+        },
+      },
+    },
+    {
+      id: "task-traffic-switch",
+      type: "task",
+      position: { x: 150, y: 1250 },
+      data: {
+        label: "流量切换",
+        description: "将用户流量切换到新版本",
+        properties: {
+          负责人: "网络工程师",
+          方式: "负载均衡器配置",
+        },
+      },
+    },
+    {
+      id: "task-rollback",
+      type: "task",
+      position: { x: 450, y: 1250 },
+      data: {
+        label: "回滚操作",
+        description: "回滚到之前的稳定版本",
+        properties: {
+          负责人: "DevOps工程师",
+          依据: "备份恢复",
+        },
+      },
+    },
+    {
+      id: "task-monitoring",
+      type: "task",
+      position: { x: 150, y: 1350 },
+      data: {
+        label: "监控配置",
+        description: "配置系统监控和告警",
+        properties: {
+          负责人: "运维工程师",
+          内容: "性能指标、错误率",
+        },
+      },
+    },
+    {
+      id: "task-performance-check",
+      type: "task",
+      position: { x: 150, y: 1450 },
+      data: {
+        label: "性能验证",
+        description: "验证系统在生产环境中的性能",
+        properties: {
+          负责人: "性能工程师",
+          指标: "响应时间、吞吐量",
+        },
+      },
+    },
+    {
+      id: "task-documentation",
+      type: "task",
+      position: { x: 150, y: 1550 },
+      data: {
+        label: "文档更新",
+        description: "更新系统文档和部署记录",
+        properties: {
+          负责人: "技术文档专员",
+          内容: "版本信息、变更记录",
+        },
+      },
+    },
+    {
+      id: "task-notification",
+      type: "task",
+      position: { x: 150, y: 1650 },
+      data: {
+        label: "通知相关方",
+        description: "通知相关团队部署完成",
+        properties: {
+          负责人: "项目经理",
+          对象: "业务团队、客户",
+        },
+      },
+    },
+    {
+      id: "end-success",
+      type: "end",
+      position: { x: 150, y: 1750 },
+      data: { label: "部署完成" },
+    },
+    {
+      id: "end-failure",
+      type: "end",
+      position: { x: 450, y: 1350 },
+      data: { label: "部署失败" },
+    },
+  ],
+  edges: [
+    { id: "e1", source: "start-node", target: "task-deployment-plan", animated: true, type: "default" },
+    { id: "e2", source: "task-deployment-plan", target: "task-environment-prep", animated: true, type: "default" },
+    { id: "e3", source: "task-environment-prep", target: "task-backup", animated: true, type: "default" },
+    { id: "e4", source: "task-backup", target: "condition-deployment-type", animated: true, type: "default" },
+    {
+      id: "e5",
+      source: "condition-deployment-type",
+      target: "task-blue-green",
+      sourceHandle: "a",
+      animated: true,
+      type: "default",
+      label: "蓝绿部署",
+    },
+    {
+      id: "e6",
+      source: "condition-deployment-type",
+      target: "task-rolling-update",
+      sourceHandle: "b",
+      animated: true,
+      type: "default",
+      label: "滚动更新",
+    },
+    { id: "e7", source: "task-blue-green", target: "task-code-deployment", animated: true, type: "default" },
+    { id: "e8", source: "task-rolling-update", target: "task-code-deployment", animated: true, type: "default" },
+    { id: "e9", source: "task-code-deployment", target: "task-config-update", animated: true, type: "default" },
+    { id: "e10", source: "task-config-update", target: "task-db-migration", animated: true, type: "default" },
+    { id: "e11", source: "task-db-migration", target: "task-service-start", animated: true, type: "default" },
+    { id: "e12", source: "task-service-start", target: "task-smoke-test", animated: true, type: "default" },
+    { id: "e13", source: "task-smoke-test", target: "condition-test-result", animated: true, type: "default" },
+    {
+      id: "e14",
+      source: "condition-test-result",
+      target: "task-traffic-switch",
+      sourceHandle: "a",
+      animated: true,
+      type: "default",
+      label: "通过",
+    },
+    {
+      id: "e15",
+      source: "condition-test-result",
+      target: "task-rollback",
+      sourceHandle: "b",
+      animated: true,
+      type: "default",
+      label: "失败",
+    },
+    { id: "e16", source: "task-traffic-switch", target: "task-monitoring", animated: true, type: "default" },
+    { id: "e17", source: "task-monitoring", target: "task-performance-check", animated: true, type: "default" },
+    { id: "e18", source: "task-performance-check", target: "task-documentation", animated: true, type: "default" },
+    { id: "e19", source: "task-documentation", target: "task-notification", animated: true, type: "default" },
+    { id: "e20", source: "task-notification", target: "end-success", animated: true, type: "default" },
+    { id: "e21", source: "task-rollback", target: "end-failure", animated: true, type: "default" },
+  ],
+}

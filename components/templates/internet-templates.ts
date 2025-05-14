@@ -1,4 +1,4 @@
-import type { WorkflowTemplate } from "@/components/templates/types"
+import type { WorkflowTemplate } from "./index"
 
 // 用户注册流程
 export const userRegistrationTemplate: WorkflowTemplate = {
@@ -554,5 +554,306 @@ export const orderProcessingTemplate: WorkflowTemplate = {
     { id: "e10", source: "task-notify", target: "end-success", animated: true, type: "default" },
     { id: "e11", source: "task-payment-failed", target: "end-cancelled", animated: true, type: "default" },
     { id: "e12", source: "task-backorder", target: "end-cancelled", animated: true, type: "default" },
+  ],
+}
+
+// 支付处理流程
+export const paymentProcessingTemplate: WorkflowTemplate = {
+  id: "payment-processing",
+  name: "支付处理流程",
+  description: "完整的在线支付处理流程，包括多种支付方式和异常处理",
+  category: "互联网",
+  nodes: [
+    {
+      id: "start-node",
+      type: "start",
+      position: { x: 250, y: 50 },
+      data: { label: "开始支付" },
+    },
+    {
+      id: "payment-init",
+      type: "task",
+      position: { x: 250, y: 150 },
+      data: {
+        label: "支付初始化",
+        description: "创建支付订单并初始化支付环境",
+        properties: {
+          处理人: "系统",
+          超时时间: "30秒",
+        },
+      },
+    },
+    {
+      id: "payment-method",
+      type: "condition",
+      position: { x: 250, y: 250 },
+      data: {
+        label: "支付方式选择",
+        description: "用户选择支付方式",
+        properties: {
+          条件: "支付方式",
+        },
+      },
+    },
+    {
+      id: "third-party-payment",
+      type: "task",
+      position: { x: 100, y: 350 },
+      data: {
+        label: "第三方支付",
+        description: "重定向到第三方支付页面",
+        properties: {
+          处理人: "系统",
+          支付方式: "支付宝/微信/银联",
+        },
+      },
+    },
+    {
+      id: "direct-payment",
+      type: "task",
+      position: { x: 400, y: 350 },
+      data: {
+        label: "平台内支付",
+        description: "使用平台钱包余额支付",
+        properties: {
+          处理人: "系统",
+          支付方式: "余额/积分",
+        },
+      },
+    },
+    {
+      id: "payment-callback",
+      type: "task",
+      position: { x: 100, y: 450 },
+      data: {
+        label: "支付回调",
+        description: "接收第三方支付回调",
+        properties: {
+          处理人: "系统",
+          超时时间: "5分钟",
+        },
+      },
+    },
+    {
+      id: "payment-verification",
+      type: "task",
+      position: { x: 250, y: 550 },
+      data: {
+        label: "支付验证",
+        description: "验证支付结果",
+        properties: {
+          处理人: "系统",
+          验证方式: "签名验证/订单匹配",
+        },
+      },
+    },
+    {
+      id: "payment-result",
+      type: "condition",
+      position: { x: 250, y: 650 },
+      data: {
+        label: "支付结果",
+        description: "判断支付是否成功",
+        properties: {
+          条件: "支付状态",
+        },
+      },
+    },
+    {
+      id: "payment-success",
+      type: "task",
+      position: { x: 100, y: 750 },
+      data: {
+        label: "支付成功处理",
+        description: "更新订单状态并通知用户",
+        properties: {
+          处理人: "系统",
+          通知方式: "消息/邮件",
+        },
+      },
+    },
+    {
+      id: "payment-failure",
+      type: "task",
+      position: { x: 400, y: 750 },
+      data: {
+        label: "支付失败处理",
+        description: "记录失败原因并通知用户",
+        properties: {
+          处理人: "系统",
+          通知方式: "消息/邮件",
+        },
+      },
+    },
+    {
+      id: "refund-check",
+      type: "condition",
+      position: { x: 400, y: 850 },
+      data: {
+        label: "退款检查",
+        description: "检查是否需要退款",
+        properties: {
+          条件: "是否已扣款",
+        },
+      },
+    },
+    {
+      id: "refund-process",
+      type: "task",
+      position: { x: 550, y: 950 },
+      data: {
+        label: "退款处理",
+        description: "处理退款流程",
+        properties: {
+          处理人: "系统",
+          退款方式: "原路退回",
+        },
+      },
+    },
+    {
+      id: "payment-record",
+      type: "task",
+      position: { x: 250, y: 1050 },
+      data: {
+        label: "支付记录",
+        description: "记录支付流水并进行数据分析",
+        properties: {
+          处理人: "系统",
+          记录内容: "交易ID/金额/时间/状态",
+        },
+      },
+    },
+    {
+      id: "end-node",
+      type: "end",
+      position: { x: 250, y: 1150 },
+      data: { label: "支付完成" },
+    },
+  ],
+  edges: [
+    {
+      id: "e1",
+      source: "start-node",
+      target: "payment-init",
+      animated: true,
+      type: "default",
+    },
+    {
+      id: "e2",
+      source: "payment-init",
+      target: "payment-method",
+      animated: true,
+      type: "default",
+    },
+    {
+      id: "e3",
+      source: "payment-method",
+      target: "third-party-payment",
+      sourceHandle: "a",
+      animated: true,
+      type: "default",
+      label: "第三方",
+    },
+    {
+      id: "e4",
+      source: "payment-method",
+      target: "direct-payment",
+      sourceHandle: "b",
+      animated: true,
+      type: "default",
+      label: "平台内",
+    },
+    {
+      id: "e5",
+      source: "third-party-payment",
+      target: "payment-callback",
+      animated: true,
+      type: "default",
+    },
+    {
+      id: "e6",
+      source: "payment-callback",
+      target: "payment-verification",
+      animated: true,
+      type: "default",
+    },
+    {
+      id: "e7",
+      source: "direct-payment",
+      target: "payment-verification",
+      animated: true,
+      type: "default",
+    },
+    {
+      id: "e8",
+      source: "payment-verification",
+      target: "payment-result",
+      animated: true,
+      type: "default",
+    },
+    {
+      id: "e9",
+      source: "payment-result",
+      target: "payment-success",
+      sourceHandle: "a",
+      animated: true,
+      type: "default",
+      label: "成功",
+    },
+    {
+      id: "e10",
+      source: "payment-result",
+      target: "payment-failure",
+      sourceHandle: "b",
+      animated: true,
+      type: "default",
+      label: "失败",
+    },
+    {
+      id: "e11",
+      source: "payment-failure",
+      target: "refund-check",
+      animated: true,
+      type: "default",
+    },
+    {
+      id: "e12",
+      source: "refund-check",
+      target: "refund-process",
+      sourceHandle: "a",
+      animated: true,
+      type: "default",
+      label: "需要退款",
+    },
+    {
+      id: "e13",
+      source: "refund-check",
+      target: "payment-record",
+      sourceHandle: "b",
+      animated: true,
+      type: "default",
+      label: "无需退款",
+    },
+    {
+      id: "e14",
+      source: "payment-success",
+      target: "payment-record",
+      animated: true,
+      type: "default",
+    },
+    {
+      id: "e15",
+      source: "refund-process",
+      target: "payment-record",
+      animated: true,
+      type: "default",
+    },
+    {
+      id: "e16",
+      source: "payment-record",
+      target: "end-node",
+      animated: true,
+      type: "default",
+    },
   ],
 }

@@ -11,17 +11,27 @@ export interface WorkflowTemplate {
   thumbnail?: string
 }
 
+// 正确导入模板
 import { simpleSequentialTemplate, conditionalBranchingTemplate } from "./basic-templates"
 import { approvalWorkflowTemplate } from "./approval-templates"
 import { dataProcessingTemplate } from "./data-templates"
-import { userRegistrationTemplate, contentModerationTemplate, orderProcessingTemplate } from "./internet-templates"
+import {
+  userRegistrationTemplate,
+  contentModerationTemplate,
+  orderProcessingTemplate,
+  paymentProcessingTemplate,
+} from "./internet-templates"
 import {
   cicdPipelineTemplate,
   agileDevProcessTemplate,
   apiDesignTemplate,
   productDevelopmentTemplate,
 } from "./software-templates"
-import { microserviceArchitectureTemplate, databaseDesignTemplate } from "./architecture-templates"
+import {
+  microserviceArchitectureTemplate,
+  databaseDesignTemplate,
+  systemDeploymentTemplate,
+} from "./architecture-templates"
 import {
   marketingCampaignTemplate,
   contentMarketingTemplate,
@@ -45,16 +55,18 @@ export const workflowTemplates: WorkflowTemplate[] = [
   userRegistrationTemplate,
   contentModerationTemplate,
   orderProcessingTemplate,
+  paymentProcessingTemplate, // 新添加的支付流程模板
 
   // 软件开发模板
   cicdPipelineTemplate,
   agileDevProcessTemplate,
   apiDesignTemplate,
-  productDevelopmentTemplate, // 添加新的产品开发流程模板
+  productDevelopmentTemplate, // 新添加的产品开发流程模板
 
   // 系统架构模板
   microserviceArchitectureTemplate,
   databaseDesignTemplate,
+  systemDeploymentTemplate, // 新添加的系统部署模板
 
   // 营销模板
   marketingCampaignTemplate,
