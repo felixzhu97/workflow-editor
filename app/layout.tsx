@@ -4,7 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin", "latin-ext"], weight: ["400", "500", "600", "700"] })
 
 export const metadata: Metadata = {
   title: "工作流编辑器",

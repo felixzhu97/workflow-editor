@@ -86,7 +86,7 @@ export function ImportDialog({ onImport }: ImportDialogProps) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline">
+        <Button size="sm" variant="outline" className="min-w-24 flex items-center justify-center">
           <Upload className="mr-2 h-4 w-4" />
           导入
         </Button>

@@ -27,7 +27,7 @@ export function TemplateDialog({ open, onOpenChange, onSelectTemplate }: Templat
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[850px] max-h-[85vh] overflow-hidden">
+      <DialogContent className="sm:max-w-[900px] max-h-[85vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-xl">选择工作流模板</DialogTitle>
         </DialogHeader>
@@ -44,8 +44,8 @@ export function TemplateDialog({ open, onOpenChange, onSelectTemplate }: Templat
             ))}
           </TabsList>
 
-          <ScrollArea className="h-[520px] pr-4">
-            <div className="grid grid-cols-2 gap-6 pb-6">
+          <ScrollArea className="h-[520px] pr-4 pb-8">
+            <div className="grid grid-cols-2 gap-8 pb-8">
               {filteredTemplates.map((template) => (
                 <TemplateCard
                   key={template.id}
@@ -71,8 +71,8 @@ interface TemplateCardProps {
 
 function TemplateCard({ template, onSelect }: TemplateCardProps) {
   return (
-    <div className="flex flex-col border rounded-lg overflow-hidden bg-card hover:border-primary/40 transition-colors duration-200">
-      <div className="p-5 bg-muted/30 flex items-center gap-4">
+    <div className="flex flex-col border rounded-lg overflow-hidden bg-card hover:border-primary/40 transition-colors duration-200 shadow-sm hover:shadow-md">
+      <div className="p-6 bg-muted/30 flex items-center gap-4">
         <div className="bg-primary/10 p-3 rounded-md">
           {template.category === "基础" ? (
             <LayoutTemplate className="h-6 w-6 text-primary" />
@@ -86,10 +86,10 @@ function TemplateCard({ template, onSelect }: TemplateCardProps) {
         </div>
       </div>
 
-      <div className="p-5 flex-1">
+      <div className="p-6 flex-1">
         <p className="text-sm text-muted-foreground">{template.description}</p>
 
-        <div className="mt-4 text-xs text-muted-foreground space-y-1.5">
+        <div className="mt-5 text-xs text-muted-foreground space-y-2">
           <div className="flex justify-between">
             <span>节点数量:</span>
             <span className="font-medium">{template.nodes.length}</span>
@@ -101,7 +101,7 @@ function TemplateCard({ template, onSelect }: TemplateCardProps) {
         </div>
       </div>
 
-      <div className="p-5 border-t">
+      <div className="p-6 border-t">
         <Button onClick={onSelect} className="w-full">
           使用此模板
         </Button>

@@ -69,3 +69,180 @@
 .react-flow__edge-path[style*="animation"] {
   stroke-dasharray: 5, 5;
 }
+
+/* 增加节点之间的间距 - 更大的外边距 */
+.react-flow__node {
+  margin: 20px !important;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+/* 节点悬停效果 */
+.react-flow__node:hover {
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2));
+  transform: translateY(-2px);
+}
+
+/* 增加节点内部的间距 */
+.react-flow__node > div {
+  padding: 16px !important;
+  border-width: 2px !important;
+}
+
+/* 增加连接线的宽度和可见性 */
+.react-flow__edge-path {
+  stroke-width: 2px;
+}
+
+/* 增加连接线文本的可读性 */
+.react-flow__edge-text {
+  font-size: 12px;
+  font-weight: 600;
+  fill: #555;
+  text-shadow: 0 0 3px white;
+}
+
+/* 增加连接点大小 */
+.react-flow__handle {
+  width: 10px !important;
+  height: 10px !important;
+  border-width: 2px !important;
+}
+
+/* 连接点悬停效果 */
+.react-flow__handle:hover {
+  transform: scale(1.2);
+}
+
+/* 暗黑模式下的节点样式 - 完全重写 */
+.dark .react-flow__node {
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+}
+
+/* 暗黑模式下节点悬停效果 */
+.dark .react-flow__node:hover {
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
+}
+
+/* 暗黑模式下所有节点的通用样式 */
+.dark .react-flow__node > div {
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+/* 暗黑模式下节点内部文本样式 */
+.dark .react-flow__node .text-sm,
+.dark .react-flow__node .text-xs,
+.dark .react-flow__node .font-medium {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 暗黑模式下节点描述文本 */
+.dark .react-flow__node .text-muted-foreground {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 暗黑模式下节点分隔线 */
+.dark .react-flow__node .border-t {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 任务节点特殊样式 */
+.dark [data-type="task"] {
+  border-left: 4px solid rgba(59, 130, 246, 0.8) !important;
+}
+
+/* 条件节点特殊样式 */
+.dark [data-type="condition"] {
+  border-left: 4px solid rgba(245, 158, 11, 0.8) !important;
+}
+
+/* 开始节点特殊样式 */
+.dark [data-type="start"] {
+  border-left: 4px solid rgba(34, 197, 94, 0.8) !important;
+}
+
+/* 结束节点特殊样式 */
+.dark [data-type="end"] {
+  border-left: 4px solid rgba(239, 68, 68, 0.8) !important;
+}
+
+/* 暗黑模式下的图标颜色 */
+.dark .text-primary {
+  color: rgba(59, 130, 246, 1) !important;
+}
+
+.dark .text-amber-500 {
+  color: rgba(245, 158, 11, 1) !important;
+}
+
+.dark .text-green-500 {
+  color: rgba(34, 197, 94, 1) !important;
+}
+
+.dark .text-red-500 {
+  color: rgba(239, 68, 68, 1) !important;
+}
+
+/* 暗黑模式下的连接线样式 */
+.dark .react-flow__edge-path {
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 2px;
+}
+
+.dark .react-flow__edge-text {
+  fill: #ffffff;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* 暗黑模式下的背景样式 */
+.dark .react-flow__background {
+  background-color: #0f172a;
+}
+
+.dark .react-flow__background-pattern {
+  color: rgba(255, 255, 255, 0.1);
+}
+
+/* 暗黑模式下的控制面板样式 */
+.dark .react-flow__controls {
+  background-color: rgba(30, 41, 59, 0.95);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark .react-flow__controls-button {
+  background-color: rgba(30, 41, 59, 0.95);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark .react-flow__controls-button:hover {
+  background-color: rgba(51, 65, 85, 0.95);
+}
+
+/* 暗黑模式下的小地图样式 */
+.dark .react-flow__minimap {
+  background-color: rgba(30, 41, 59, 0.95);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 暗黑模式下的节点选中状态 */
+.dark .react-flow__node.selected {
+  outline: 3px solid rgba(59, 130, 246, 0.8) !important;
+}
+
+/* 暗黑模式下的连接点样式 */
+.dark .react-flow__handle {
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.5);
+  width: 10px !important;
+  height: 10px !important;
+}
+
+/* 暗黑模式下的连接点悬停样式 */
+.dark .react-flow__handle:hover {
+  background-color: rgba(59, 130, 246, 1);
+}

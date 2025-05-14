@@ -147,7 +147,12 @@ export function ExportDropdown({ getWorkflowData, screenshotRef }: ExportDropdow
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="sm" variant="outline" disabled={isExporting}>
+        <Button
+          size="sm"
+          variant="outline"
+          className="min-w-24 flex items-center justify-center"
+          disabled={isExporting}
+        >
           <Download className="mr-2 h-4 w-4" />
           导出
         </Button>

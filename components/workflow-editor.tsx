@@ -115,9 +115,9 @@ export function WorkflowEditor() {
 
       // 查找最近的节点，确保新节点不会与现有节点重叠
       const nearestNode = findNearestNode(position, nodes)
-      if (nearestNode && calculateDistance(position, nearestNode.position) < 100) {
+      if (nearestNode && calculateDistance(position, nearestNode.position) < 200) {
         // 如果新节点太靠近现有节点，调整其位置
-        position.y += 150
+        position.y += 250
       }
 
       setNodes((nds) => nds.concat(newNode))
@@ -309,22 +309,34 @@ export function WorkflowEditor() {
             edgeTypes={edgeTypes}
             defaultEdgeOptions={{ type: "default" }}
             fitView
+            defaultViewport={{ x: 0, y: 0, zoom: 0.7 }} // 默认缩小视图以显示更多内容
+            minZoom={0.2} // 允许更小的缩放以查看全局
+            maxZoom={2} // 限制最大缩放
+            nodesDraggable={true}
+            elementsSelectable={true}
+            snapToGrid={true}
+            snapGrid={[20, 20]} // 设置网格对齐
           >
             <Controls />
             <MiniMap />
             <Background gap={12} size={1} />
             <Panel position="top-right">
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setIsTemplateDialogOpen(true)}>
+              <div className="flex gap-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsTemplateDialogOpen(true)}
+                  className="min-w-24 flex items-center justify-center"
+                >
                   <FileTemplate className="mr-2 h-4 w-4" />
                   模板
                 </Button>
                 <ImportDialog onImport={handleImportWorkflow} />
-                <Button variant="outline" size="sm" onClick={onClear}>
+                <Button variant="outline" size="sm" onClick={onClear} className="min-w-24">
                   <Trash2 className="mr-2 h-4 w-4" />
                   清空
                 </Button>
-                <Button size="sm" onClick={onSave}>
+                <Button size="sm" onClick={onSave} className="min-w-24">
                   <Save className="mr-2 h-4 w-4" />
                   保存
                 </Button>
