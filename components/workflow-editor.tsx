@@ -1,0 +1,327 @@
+"use client"
+
+import type React from "react"
+
+import { useState, useCallback, useRef } from "react"
+import ReactFlow, {
+  ReactFlowProvider,
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  type Connection,
+  type Edge,
+  type Node,
+  type NodeTypes,
+  type EdgeTypes,
+  Panel,
+} from "reactflow"
+import "reactflow/dist/style.css"
+import { NodeSidebar } from "./node-sidebar"
+import { TaskNode } from "./nodes/task-node"
+import { ConditionNode } from "./nodes/condition-node"
+import { StartNode } from "./nodes/start-node"
+import { EndNode } from "./nodes/end-node"
+import { CustomEdge } from "./custom-edge"
+import { Save, Trash2, FileIcon as FileTemplate } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { NodeEditDialog } from "./node-edit-dialog"
+import { ExportDropdown } from "./export-dropdown"
+import { ImportDialog } from "./import-dialog"
+import { TemplateDialog } from "./templates/template-dialog"
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/hooks/use-toast"
+
+// 定义节点类型
+const nodeTypes: NodeTypes = {
+  task: TaskNode,
+  condition: ConditionNode,
+  start: StartNode,
+  end: EndNode,
+}
+
+// 定义边类型
+const edgeTypes: EdgeTypes = {
+  default: CustomEdge,
+}
+
+// 初始节点
+const initialNodes: Node[] = [
+  {
+    id: "1",
+    type: "start",
+    data: { label: "开始" },
+    position: { x: 250, y: 5 },
+  },
+]
+
+export function WorkflowEditor() {
+  const { toast } = useToast()
+  const reactFlowWrapper = useRef<HTMLDivElement>(null)
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
+
+  // 节点编辑状态
+  const [editingNode, setEditingNode] = useState<Node | null>(null)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+
+  // 模板对话框状态
+  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
+
+  // 处理连接线的创建
+  const onConnect = useCallback(
+    (params: Connection | Edge) => setEdges((eds) => addEdge({ ...params, animated: true, type: "default" }, eds)),
+    [setEdges],
+  )
+
+  // 处理从侧边栏拖拽到画布
+  const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = "move"
+  }, [])
+
+  // 处理拖拽释放
+  const onDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault()
+
+      const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect()
+      const type = event.dataTransfer.getData("application/reactflow")
+
+      // 检查是否有效的拖拽数据
+      if (typeof type === "undefined" || !type || !reactFlowInstance || !reactFlowBounds) {
+        return
+      }
+
+      const position = reactFlowInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      })
+
+      // 根据类型创建不同的节点
+      const newNode: Node = {
+        id: `${Date.now()}`,
+        type,
+        position,
+        data: {
+          label: `${type === "task" ? "任务" : type === "condition" ? "条件" : type === "end" ? "结束" : "节点"}`,
+          description: "",
+          properties: {},
+        },
+      }
+
+      setNodes((nds) => nds.concat(newNode))
+    },
+    [reactFlowInstance, setNodes],
+  )
+
+  // 清空画布
+  const onClear = useCallback(() => {
+    const startNode = nodes.find((node) => node.type === "start")
+    if (startNode) {
+      setNodes([startNode])
+    } else {
+      setNodes([])
+    }
+    setEdges([])
+  }, [nodes, setNodes, setEdges])
+
+  // 保存工作流
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject()
+      alert("工作流已保存到控制台")
+      console.log(flow)
+    }
+  }, [reactFlowInstance])
+
+  // 处理节点双击事件
+  const onNodeDoubleClick = useCallback((event: React.MouseEvent, node: Node) => {
+    setEditingNode(node)
+    setIsEditDialogOpen(true)
+  }, [])
+
+  // 保存节点编辑
+  const handleSaveNodeEdit = useCallback(
+    (nodeId: string, data: any) => {
+      setNodes((nds) =>
+        nds.map((node) => {
+          if (node.id === nodeId) {
+            return {
+              ...node,
+              data: {
+                ...data,
+              },
+            }
+          }
+          return node
+        }),
+      )
+    },
+    [setNodes],
+  )
+
+  // 获取工作流数据（用于导出）
+  const getWorkflowData = useCallback(() => {
+    if (reactFlowInstance) {
+      return reactFlowInstance.toObject()
+    }
+    return { nodes, edges }
+  }, [reactFlowInstance, nodes, edges])
+
+  // 导入工作流数据
+  const handleImportWorkflow = useCallback(
+    (flowData: any) => {
+      try {
+        if (reactFlowInstance) {
+          // 确保节点类型正确
+          const validatedNodes = flowData.nodes.map((node: any) => {
+            // 确保节点有有效的类型
+            if (!node.type || !["task", "condition", "start", "end"].includes(node.type)) {
+              node.type = "task" // 默认为任务节点
+            }
+
+            // 确保节点有有效的数据结构
+            if (!node.data) {
+              node.data = { label: "未命名节点" }
+            } else if (!node.data.label) {
+              node.data.label = "未命名节点"
+            }
+
+            // 确保节点有属性字段
+            if (!node.data.properties) {
+              node.data.properties = {}
+            }
+
+            return node
+          })
+
+          // 确保边有正确的类型
+          const validatedEdges = (flowData.edges || []).map((edge: Edge) => ({
+            ...edge,
+            type: "default",
+            animated: edge.animated !== false, // 默认为true
+          }))
+
+          // 设置节点和边
+          setNodes(validatedNodes)
+          setEdges(validatedEdges)
+
+          // 调整视图以适应所有节点
+          setTimeout(() => {
+            reactFlowInstance.fitView({ padding: 0.2 })
+          }, 50)
+        }
+      } catch (error) {
+        console.error("导入工作流时出错:", error)
+      }
+    },
+    [reactFlowInstance, setNodes, setEdges],
+  )
+
+  // 处理模板选择
+  const handleSelectTemplate = useCallback(
+    (template: any) => {
+      try {
+        // 确保边有正确的类型
+        const templateEdges = template.edges.map((edge: Edge) => ({
+          ...edge,
+          type: "default",
+          animated: edge.animated !== false, // 默认为true
+        }))
+
+        // 加载模板中的节点和边
+        setNodes(template.nodes)
+        setEdges(templateEdges)
+
+        // 调整视图以适应所有节点
+        setTimeout(() => {
+          if (reactFlowInstance) {
+            reactFlowInstance.fitView({ padding: 0.2 })
+          }
+        }, 50)
+
+        toast({
+          title: "模板加载成功",
+          description: `已加载"${template.name}"模板`,
+        })
+      } catch (error) {
+        console.error("加载模板时出错:", error)
+        toast({
+          title: "模板加载失败",
+          description: "无法加载所选模板，请重试",
+          variant: "destructive",
+        })
+      }
+    },
+    [reactFlowInstance, setNodes, setEdges, toast],
+  )
+
+  return (
+    <div className="flex h-[calc(100vh-73px)]">
+      <NodeSidebar onOpenTemplates={() => setIsTemplateDialogOpen(true)} />
+      <div className="flex-1" ref={reactFlowWrapper}>
+        <ReactFlowProvider>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onInit={setReactFlowInstance}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onNodeDoubleClick={onNodeDoubleClick}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            defaultEdgeOptions={{ type: "default" }}
+            fitView
+          >
+            <Controls />
+            <MiniMap />
+            <Background gap={12} size={1} />
+            <Panel position="top-right">
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => setIsTemplateDialogOpen(true)}>
+                  <FileTemplate className="mr-2 h-4 w-4" />
+                  模板
+                </Button>
+                <ImportDialog onImport={handleImportWorkflow} />
+                <Button variant="outline" size="sm" onClick={onClear}>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  清空
+                </Button>
+                <Button size="sm" onClick={onSave}>
+                  <Save className="mr-2 h-4 w-4" />
+                  保存
+                </Button>
+                <ExportDropdown getWorkflowData={getWorkflowData} screenshotRef={reactFlowWrapper} />
+              </div>
+            </Panel>
+          </ReactFlow>
+        </ReactFlowProvider>
+      </div>
+
+      {/* 节点编辑对话框 */}
+      <NodeEditDialog
+        node={editingNode}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onSave={handleSaveNodeEdit}
+      />
+
+      {/* 模板选择对话框 */}
+      <TemplateDialog
+        open={isTemplateDialogOpen}
+        onOpenChange={setIsTemplateDialogOpen}
+        onSelectTemplate={handleSelectTemplate}
+      />
+
+      {/* Toast通知 */}
+      <Toaster />
+    </div>
+  )
+}
