@@ -57,13 +57,37 @@ pnpm dev
 ```
 ├── app/            # Next.js页面路由
 ├── components/      # React组件
-│   ├── nodes/       # 各种节点组件
-│   ├── ui/          # UI组件库
-│   └── ...          # 其他编辑器组件
+│   ├── nodes/       # 节点组件(开始/结束/任务/条件)
+│   ├── templates/   # 工作流模板组件
+│   ├── ui/          # UI组件库(基于shadcn/ui)
+│   └── ...          # 编辑器核心组件
+├── docs/            # 文档
+├── hooks/           # 自定义Hook
 ├── lib/             # 工具函数
 ├── public/          # 静态资源
-└── styles/          # 全局样式
+├── styles/          # 全局样式
+└── utils/           # 算法工具
 ```
+
+## 开发指南
+
+### 添加新节点类型
+1. 在`components/nodes/`目录下创建新组件，例如`custom-node.tsx`
+2. 实现节点渲染逻辑和属性编辑表单
+3. 在`components/templates/types.ts`中注册节点类型
+4. 在`components/templates/workflow-templates.ts`中添加相关模板(可选)
+
+### 添加新模板
+1. 在`components/templates/`下对应的分类文件中添加模板定义
+2. 模板应包含：
+   - 节点配置
+   - 连接关系
+   - 默认属性值
+3. 在`components/templates/index.ts`中导出模板
+
+## 截图示例
+
+![工作流编辑器界面](public/placeholder.jpg)
 
 ## 贡献指南
 
@@ -71,3 +95,10 @@ pnpm dev
 1. 代码符合项目风格
 2. 通过ESLint检查
 3. 添加必要的测试
+4. 更新相关文档(包括README和docs目录下的文件)
+
+### 模板贡献
+1. Fork项目并创建新分支
+2. 在`components/templates/`下对应分类文件中添加模板
+3. 提供模板描述和使用场景说明
+4. 提交Pull Request并描述模板用途
