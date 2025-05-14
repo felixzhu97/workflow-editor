@@ -21,13 +21,13 @@ export const simpleSequentialTemplate: WorkflowTemplate = {
     {
       id: "start-node",
       type: "start",
-      position: { x: 250, y: 5 },
+      position: { x: 250, y: 50 },
       data: { label: "开始" },
     },
     {
       id: "task-1",
       type: "task",
-      position: { x: 250, y: 100 },
+      position: { x: 250, y: 200 },
       data: {
         label: "任务1",
         description: "第一个执行任务",
@@ -40,7 +40,7 @@ export const simpleSequentialTemplate: WorkflowTemplate = {
     {
       id: "task-2",
       type: "task",
-      position: { x: 250, y: 200 },
+      position: { x: 250, y: 350 },
       data: {
         label: "任务2",
         description: "第二个执行任务",
@@ -53,7 +53,7 @@ export const simpleSequentialTemplate: WorkflowTemplate = {
     {
       id: "end-node",
       type: "end",
-      position: { x: 250, y: 300 },
+      position: { x: 250, y: 500 },
       data: { label: "结束" },
     },
   ],
@@ -92,13 +92,13 @@ export const conditionalBranchingTemplate: WorkflowTemplate = {
     {
       id: "start-node",
       type: "start",
-      position: { x: 250, y: 5 },
+      position: { x: 250, y: 50 },
       data: { label: "开始" },
     },
     {
       id: "task-1",
       type: "task",
-      position: { x: 250, y: 100 },
+      position: { x: 250, y: 180 },
       data: {
         label: "数据准备",
         description: "准备需要处理的数据",
@@ -110,7 +110,7 @@ export const conditionalBranchingTemplate: WorkflowTemplate = {
     {
       id: "condition-1",
       type: "condition",
-      position: { x: 250, y: 200 },
+      position: { x: 250, y: 310 },
       data: {
         label: "数据验证",
         description: "验证数据是否有效",
@@ -122,7 +122,7 @@ export const conditionalBranchingTemplate: WorkflowTemplate = {
     {
       id: "task-success",
       type: "task",
-      position: { x: 100, y: 300 },
+      position: { x: 100, y: 440 },
       data: {
         label: "处理有效数据",
         description: "处理通过验证的数据",
@@ -134,7 +134,7 @@ export const conditionalBranchingTemplate: WorkflowTemplate = {
     {
       id: "task-failure",
       type: "task",
-      position: { x: 400, y: 300 },
+      position: { x: 400, y: 440 },
       data: {
         label: "处理无效数据",
         description: "处理未通过验证的数据",
@@ -146,13 +146,13 @@ export const conditionalBranchingTemplate: WorkflowTemplate = {
     {
       id: "end-success",
       type: "end",
-      position: { x: 100, y: 400 },
+      position: { x: 100, y: 570 },
       data: { label: "成功完成" },
     },
     {
       id: "end-failure",
       type: "end",
-      position: { x: 400, y: 400 },
+      position: { x: 400, y: 570 },
       data: { label: "处理失败" },
     },
   ],
@@ -206,7 +206,7 @@ export const conditionalBranchingTemplate: WorkflowTemplate = {
   ],
 }
 
-// 审批工作流
+// 审批工作流 - 重新设计布局
 export const approvalWorkflowTemplate: WorkflowTemplate = {
   id: "approval-workflow",
   name: "多级审批流程",
@@ -216,13 +216,13 @@ export const approvalWorkflowTemplate: WorkflowTemplate = {
     {
       id: "start-node",
       type: "start",
-      position: { x: 250, y: 5 },
+      position: { x: 400, y: 50 },
       data: { label: "提交申请" },
     },
     {
       id: "task-prepare",
       type: "task",
-      position: { x: 250, y: 100 },
+      position: { x: 400, y: 150 },
       data: {
         label: "准备申请材料",
         description: "准备需要审批的材料和文档",
@@ -235,7 +235,7 @@ export const approvalWorkflowTemplate: WorkflowTemplate = {
     {
       id: "task-manager-review",
       type: "task",
-      position: { x: 250, y: 200 },
+      position: { x: 400, y: 280 },
       data: {
         label: "经理审批",
         description: "直属经理进行初审",
@@ -248,7 +248,7 @@ export const approvalWorkflowTemplate: WorkflowTemplate = {
     {
       id: "condition-manager",
       type: "condition",
-      position: { x: 250, y: 300 },
+      position: { x: 400, y: 410 },
       data: {
         label: "经理审批结果",
         description: "经理是否批准",
@@ -258,9 +258,21 @@ export const approvalWorkflowTemplate: WorkflowTemplate = {
       },
     },
     {
+      id: "task-reject",
+      type: "task",
+      position: { x: 650, y: 510 },
+      data: {
+        label: "申请被拒绝",
+        description: "通知申请人申请被拒绝",
+        properties: {
+          通知方式: "系统消息",
+        },
+      },
+    },
+    {
       id: "task-finance-review",
       type: "task",
-      position: { x: 100, y: 400 },
+      position: { x: 150, y: 510 },
       data: {
         label: "财务审批",
         description: "财务部门进行复审",
@@ -271,21 +283,9 @@ export const approvalWorkflowTemplate: WorkflowTemplate = {
       },
     },
     {
-      id: "task-reject",
-      type: "task",
-      position: { x: 400, y: 400 },
-      data: {
-        label: "申请被拒绝",
-        description: "通知申请人申请被拒绝",
-        properties: {
-          通知方式: "系统消息",
-        },
-      },
-    },
-    {
       id: "condition-finance",
       type: "condition",
-      position: { x: 100, y: 500 },
+      position: { x: 150, y: 640 },
       data: {
         label: "财务审批结果",
         description: "财务是否批准",
@@ -297,7 +297,7 @@ export const approvalWorkflowTemplate: WorkflowTemplate = {
     {
       id: "task-payment",
       type: "task",
-      position: { x: 0, y: 600 },
+      position: { x: 50, y: 770 },
       data: {
         label: "支付处理",
         description: "处理报销支付",
@@ -310,7 +310,7 @@ export const approvalWorkflowTemplate: WorkflowTemplate = {
     {
       id: "task-reject-finance",
       type: "task",
-      position: { x: 200, y: 600 },
+      position: { x: 250, y: 770 },
       data: {
         label: "财务拒绝",
         description: "通知申请人财务拒绝",
@@ -322,13 +322,13 @@ export const approvalWorkflowTemplate: WorkflowTemplate = {
     {
       id: "end-approved",
       type: "end",
-      position: { x: 0, y: 700 },
+      position: { x: 50, y: 900 },
       data: { label: "申请通过" },
     },
     {
       id: "end-rejected",
       type: "end",
-      position: { x: 300, y: 700 },
+      position: { x: 650, y: 900 },
       data: { label: "申请被拒" },
     },
   ],
@@ -389,13 +389,13 @@ export const dataProcessingTemplate: WorkflowTemplate = {
     {
       id: "start-node",
       type: "start",
-      position: { x: 250, y: 5 },
+      position: { x: 250, y: 50 },
       data: { label: "开始数据处理" },
     },
     {
       id: "task-extract",
       type: "task",
-      position: { x: 250, y: 100 },
+      position: { x: 250, y: 180 },
       data: {
         label: "数据提取",
         description: "从数据源提取原始数据",
@@ -408,7 +408,7 @@ export const dataProcessingTemplate: WorkflowTemplate = {
     {
       id: "condition-data-check",
       type: "condition",
-      position: { x: 250, y: 200 },
+      position: { x: 250, y: 310 },
       data: {
         label: "数据检查",
         description: "检查数据是否完整",
@@ -420,7 +420,7 @@ export const dataProcessingTemplate: WorkflowTemplate = {
     {
       id: "task-clean",
       type: "task",
-      position: { x: 100, y: 300 },
+      position: { x: 100, y: 440 },
       data: {
         label: "数据清洗",
         description: "清洗和标准化数据",
@@ -432,7 +432,7 @@ export const dataProcessingTemplate: WorkflowTemplate = {
     {
       id: "task-error-log",
       type: "task",
-      position: { x: 400, y: 300 },
+      position: { x: 400, y: 440 },
       data: {
         label: "错误记录",
         description: "记录数据错误",
@@ -444,7 +444,7 @@ export const dataProcessingTemplate: WorkflowTemplate = {
     {
       id: "task-transform",
       type: "task",
-      position: { x: 100, y: 400 },
+      position: { x: 100, y: 570 },
       data: {
         label: "数据转换",
         description: "转换数据格式和结构",
@@ -456,7 +456,7 @@ export const dataProcessingTemplate: WorkflowTemplate = {
     {
       id: "task-load",
       type: "task",
-      position: { x: 100, y: 500 },
+      position: { x: 100, y: 700 },
       data: {
         label: "数据加载",
         description: "将处理后的数据加载到目标系统",
@@ -469,13 +469,13 @@ export const dataProcessingTemplate: WorkflowTemplate = {
     {
       id: "end-success",
       type: "end",
-      position: { x: 100, y: 600 },
+      position: { x: 100, y: 830 },
       data: { label: "处理完成" },
     },
     {
       id: "end-failure",
       type: "end",
-      position: { x: 400, y: 400 },
+      position: { x: 400, y: 570 },
       data: { label: "处理失败" },
     },
   ],

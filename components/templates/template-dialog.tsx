@@ -27,13 +27,13 @@ export function TemplateDialog({ open, onOpenChange, onSelectTemplate }: Templat
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-hidden">
+      <DialogContent className="sm:max-w-[850px] max-h-[85vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle>选择工作流模板</DialogTitle>
+          <DialogTitle className="text-xl">选择工作流模板</DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue="基础" className="mt-2">
-          <TabsList className="mb-4">
+        <Tabs defaultValue="基础" className="mt-4">
+          <TabsList className="mb-6 w-full justify-start">
             <TabsTrigger value="全部" onClick={() => setSelectedCategory("全部")}>
               全部
             </TabsTrigger>
@@ -44,8 +44,8 @@ export function TemplateDialog({ open, onOpenChange, onSelectTemplate }: Templat
             ))}
           </TabsList>
 
-          <ScrollArea className="h-[500px] pr-4">
-            <div className="grid grid-cols-2 gap-4">
+          <ScrollArea className="h-[520px] pr-4">
+            <div className="grid grid-cols-2 gap-6 pb-6">
               {filteredTemplates.map((template) => (
                 <TemplateCard
                   key={template.id}
@@ -71,25 +71,25 @@ interface TemplateCardProps {
 
 function TemplateCard({ template, onSelect }: TemplateCardProps) {
   return (
-    <div className="flex flex-col border rounded-lg overflow-hidden bg-card">
-      <div className="p-4 bg-muted/30 flex items-center gap-3">
-        <div className="bg-primary/10 p-2 rounded-md">
+    <div className="flex flex-col border rounded-lg overflow-hidden bg-card hover:border-primary/40 transition-colors duration-200">
+      <div className="p-5 bg-muted/30 flex items-center gap-4">
+        <div className="bg-primary/10 p-3 rounded-md">
           {template.category === "基础" ? (
-            <LayoutTemplate className="h-5 w-5 text-primary" />
+            <LayoutTemplate className="h-6 w-6 text-primary" />
           ) : (
-            <FileTemplate className="h-5 w-5 text-primary" />
+            <FileTemplate className="h-6 w-6 text-primary" />
           )}
         </div>
         <div>
-          <h3 className="font-medium">{template.name}</h3>
+          <h3 className="font-medium text-lg">{template.name}</h3>
           <p className="text-xs text-muted-foreground">{template.category}</p>
         </div>
       </div>
 
-      <div className="p-4 flex-1">
+      <div className="p-5 flex-1">
         <p className="text-sm text-muted-foreground">{template.description}</p>
 
-        <div className="mt-3 text-xs text-muted-foreground">
+        <div className="mt-4 text-xs text-muted-foreground space-y-1.5">
           <div className="flex justify-between">
             <span>节点数量:</span>
             <span className="font-medium">{template.nodes.length}</span>
@@ -101,7 +101,7 @@ function TemplateCard({ template, onSelect }: TemplateCardProps) {
         </div>
       </div>
 
-      <div className="p-4 border-t">
+      <div className="p-5 border-t">
         <Button onClick={onSelect} className="w-full">
           使用此模板
         </Button>

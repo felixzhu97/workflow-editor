@@ -53,7 +53,7 @@ const initialNodes: Node[] = [
     id: "1",
     type: "start",
     data: { label: "开始" },
-    position: { x: 250, y: 5 },
+    position: { x: 250, y: 50 },
   },
 ]
 
@@ -113,9 +113,16 @@ export function WorkflowEditor() {
         },
       }
 
+      // 查找最近的节点，确保新节点不会与现有节点重叠
+      const nearestNode = findNearestNode(position, nodes)
+      if (nearestNode && calculateDistance(position, nearestNode.position) < 100) {
+        // 如果新节点太靠近现有节点，调整其位置
+        position.y += 150
+      }
+
       setNodes((nds) => nds.concat(newNode))
     },
-    [reactFlowInstance, setNodes],
+    [reactFlowInstance, setNodes, nodes],
   )
 
   // 清空画布
@@ -259,6 +266,29 @@ export function WorkflowEditor() {
     },
     [reactFlowInstance, setNodes, setEdges, toast],
   )
+
+  // 计算两点之间的距离
+  const calculateDistance = (pos1: { x: number; y: number }, pos2: { x: number; y: number }) => {
+    return Math.sqrt(Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2))
+  }
+
+  // 找到最近的节点
+  const findNearestNode = (position: { x: number; y: number }, nodeList: Node[]) => {
+    if (nodeList.length === 0) return null
+
+    let nearestNode = nodeList[0]
+    let minDistance = calculateDistance(position, nodeList[0].position)
+
+    for (let i = 1; i < nodeList.length; i++) {
+      const distance = calculateDistance(position, nodeList[i].position)
+      if (distance < minDistance) {
+        minDistance = distance
+        nearestNode = nodeList[i]
+      }
+    }
+
+    return nearestNode
+  }
 
   return (
     <div className="flex h-[calc(100vh-73px)]">

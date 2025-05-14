@@ -9,7 +9,6 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "工作流编辑器",
   description: "可视化工作流编辑器",
-    generator: ''
 }
 
 export default function RootLayout({
