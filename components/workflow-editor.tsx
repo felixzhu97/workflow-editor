@@ -25,14 +25,16 @@ import { ConditionNode } from "./nodes/condition-node"
 import { StartNode } from "./nodes/start-node"
 import { EndNode } from "./nodes/end-node"
 import { CustomEdge } from "./custom-edge"
-import { Save, Trash2, FileIcon as FileTemplate } from "lucide-react"
+import { Save, Trash2, FileIcon as FileTemplate, LayoutGrid } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { NodeEditDialog } from "./node-edit-dialog"
 import { ExportDropdown } from "./export-dropdown"
 import { ImportDialog } from "./import-dialog"
 import { TemplateDialog } from "./templates/template-dialog"
+import { LayoutOptionsDialog } from "./layout-options-dialog"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
+import { LayoutAlgorithms, type LayoutOptions, defaultLayoutOptions } from "@/utils/layout-algorithms"
 
 // 定义节点类型
 const nodeTypes: NodeTypes = {
@@ -57,7 +59,8 @@ const initialNodes: Node[] = [
   },
 ]
 
-export function WorkflowEditor() {
+// 内部工作流编辑器组件
+function WorkflowEditorInner() {
   const { toast } = useToast()
   const reactFlowWrapper = useRef<HTMLDivElement>(null)
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
@@ -70,6 +73,10 @@ export function WorkflowEditor() {
 
   // 模板对话框状态
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
+
+  // 布局选项对话框状态
+  const [isLayoutDialogOpen, setIsLayoutDialogOpen] = useState(false)
+  const [layoutOptions, setLayoutOptions] = useState<LayoutOptions>(defaultLayoutOptions)
 
   // 处理连接线的创建
   const onConnect = useCallback(
@@ -267,6 +274,62 @@ export function WorkflowEditor() {
     [reactFlowInstance, setNodes, setEdges, toast],
   )
 
+  // 应用布局
+  const applyLayout = useCallback(
+    (options: LayoutOptions) => {
+      if (nodes.length === 0) return
+
+      try {
+        // 应用布局算法
+        const newNodes = LayoutAlgorithms.applyLayout([...nodes], [...edges], options)
+
+        // 更新节点位置
+        setNodes(newNodes)
+
+        // 保存布局选项
+        setLayoutOptions(options)
+
+        // 调整视图以适应所有节点
+        setTimeout(() => {
+          if (reactFlowInstance) {
+            reactFlowInstance.fitView({ padding: 0.2 })
+          }
+        }, 50)
+
+        toast({
+          title: "布局应用成功",
+          description: `已应用${getLayoutTypeName(options.type)}布局`,
+        })
+      } catch (error) {
+        console.error("应用布局时出错:", error)
+        toast({
+          title: "布局应用失败",
+          description: "无法应用所选布局，请重试",
+          variant: "destructive",
+        })
+      }
+    },
+    [nodes, edges, setNodes, reactFlowInstance, toast],
+  )
+
+  // 获取布局类型名称
+  const getLayoutTypeName = (type: string): string => {
+    switch (type) {
+      case "hierarchical":
+        return "分层"
+      case "horizontal":
+        return "水平"
+      case "vertical":
+        return "垂直"
+      case "force":
+        return "力导向"
+      case "radial":
+        return "放射状"
+      default:
+        return "自动"
+    }
+  }
+
   // 计算两点之间的距离
   const calculateDistance = (pos1: { x: number; y: number }, pos2: { x: number; y: number }) => {
     return Math.sqrt(Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2))
@@ -294,57 +357,64 @@ export function WorkflowEditor() {
     <div className="flex h-[calc(100vh-73px)]">
       <NodeSidebar onOpenTemplates={() => setIsTemplateDialogOpen(true)} />
       <div className="flex-1" ref={reactFlowWrapper}>
-        <ReactFlowProvider>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodeDoubleClick={onNodeDoubleClick}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            defaultEdgeOptions={{ type: "default" }}
-            fitView
-            defaultViewport={{ x: 0, y: 0, zoom: 0.7 }} // 默认缩小视图以显示更多内容
-            minZoom={0.2} // 允许更小的缩放以查看全局
-            maxZoom={2} // 限制最大缩放
-            nodesDraggable={true}
-            elementsSelectable={true}
-            snapToGrid={true}
-            snapGrid={[20, 20]} // 设置网格对齐
-          >
-            <Controls />
-            <MiniMap />
-            <Background gap={12} size={1} />
-            <Panel position="top-right">
-              <div className="flex gap-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsTemplateDialogOpen(true)}
-                  className="min-w-24 flex items-center justify-center"
-                >
-                  <FileTemplate className="mr-2 h-4 w-4" />
-                  模板
-                </Button>
-                <ImportDialog onImport={handleImportWorkflow} />
-                <Button variant="outline" size="sm" onClick={onClear} className="min-w-24">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  清空
-                </Button>
-                <Button size="sm" onClick={onSave} className="min-w-24">
-                  <Save className="mr-2 h-4 w-4" />
-                  保存
-                </Button>
-                <ExportDropdown getWorkflowData={getWorkflowData} screenshotRef={reactFlowWrapper} />
-              </div>
-            </Panel>
-          </ReactFlow>
-        </ReactFlowProvider>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onInit={setReactFlowInstance}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onNodeDoubleClick={onNodeDoubleClick}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          defaultEdgeOptions={{ type: "default" }}
+          fitView
+          defaultViewport={{ x: 0, y: 0, zoom: 0.7 }} // 默认缩小视图以显示更多内容
+          minZoom={0.2} // 允许更小的缩放以查看全局
+          maxZoom={2} // 限制最大缩放
+          nodesDraggable={true}
+          elementsSelectable={true}
+          snapToGrid={true}
+          snapGrid={[20, 20]} // 设置网格对齐
+        >
+          <Controls />
+          <MiniMap />
+          <Background gap={12} size={1} />
+          <Panel position="top-right">
+            <div className="flex gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsTemplateDialogOpen(true)}
+                className="min-w-24 flex items-center justify-center"
+              >
+                <FileTemplate className="mr-2 h-4 w-4" />
+                模板
+              </Button>
+              <ImportDialog onImport={handleImportWorkflow} />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsLayoutDialogOpen(true)}
+                className="min-w-24 flex items-center justify-center"
+              >
+                <LayoutGrid className="mr-2 h-4 w-4" />
+                自动布局
+              </Button>
+              <Button variant="outline" size="sm" onClick={onClear} className="min-w-24">
+                <Trash2 className="mr-2 h-4 w-4" />
+                清空
+              </Button>
+              <Button size="sm" onClick={onSave} className="min-w-24">
+                <Save className="mr-2 h-4 w-4" />
+                保存
+              </Button>
+              <ExportDropdown getWorkflowData={getWorkflowData} screenshotRef={reactFlowWrapper} />
+            </div>
+          </Panel>
+        </ReactFlow>
       </div>
 
       {/* 节点编辑对话框 */}
@@ -362,8 +432,25 @@ export function WorkflowEditor() {
         onSelectTemplate={handleSelectTemplate}
       />
 
+      {/* 布局选项对话框 */}
+      <LayoutOptionsDialog
+        open={isLayoutDialogOpen}
+        onOpenChange={setIsLayoutDialogOpen}
+        onApply={applyLayout}
+        initialOptions={layoutOptions}
+      />
+
       {/* Toast通知 */}
       <Toaster />
     </div>
+  )
+}
+
+// 导出带有ReactFlow Provider的组件
+export function WorkflowEditor() {
+  return (
+    <ReactFlowProvider>
+      <WorkflowEditorInner />
+    </ReactFlowProvider>
   )
 }

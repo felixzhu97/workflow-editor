@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { workflowTemplates, type WorkflowTemplate } from "./workflow-templates"
+import { workflowTemplates, type WorkflowTemplate } from "@/components/templates/index"
 import { FileIcon as FileTemplate, LayoutTemplate } from "lucide-react"
 
 interface TemplateDialogProps {
