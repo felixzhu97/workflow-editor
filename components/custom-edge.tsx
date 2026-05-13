@@ -15,12 +15,15 @@ export const CustomEdge = memo(
     markerEnd,
     animated,
   }: EdgeProps) => {
+    const offsetX = 18 // 向右偏移的像素
+    const offsetY = 20  // 向下偏移的像素
+
     const [edgePath] = getBezierPath({
-      sourceX,
-      sourceY,
+      sourceX: sourceX + offsetX,
+      sourceY: sourceY + offsetY,
       sourcePosition,
-      targetX,
-      targetY,
+      targetX: targetX + offsetX,
+      targetY: targetY + offsetY,
       targetPosition,
     })
 
