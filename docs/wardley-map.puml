@@ -1,0 +1,102 @@
+@startuml workflow-editor-wardley
+skinparam componentStyle rectangle
+
+skinparam rectangle {
+    BackgroundColor #f9f9f9
+    BorderColor #333333
+    FontSize 11
+    Shadowing false
+}
+
+skinparam note {
+    BackgroundColor #ffffcc
+    BorderColor #333333
+    FontSize 10
+}
+
+title 工作流编辑器 - 沃德利地图 (Wardley Map)
+
+' === 用户界面层 ===
+rectangle "用户界面层 [UI Layer]" <<UI>> #lightblue {
+    rectangle "React组件 [Components]" as react_components
+    rectangle "Next.js页面 [Pages]" as next_pages
+    rectangle "Shadcn/ui [Component Library]" as shadcn
+    rectangle "Tailwind CSS [Styling]" as tailwind
+    rectangle "React Flow [Flow Renderer]" as flow_renderer
+}
+
+' === 编辑器核心层 ===
+rectangle "编辑器核心 [Editor Core]" <<CORE>> #lightyellow {
+    rectangle "React Flow引擎 [Graph Engine]" as reactflow
+    rectangle "布局算法 [Layout Algorithms]" as layout_algo
+    rectangle "节点系统 [Node System]" as node_system
+    rectangle "状态管理 [State Management]" as state_mgmt
+}
+
+' === 模板系统层 ===
+rectangle "模板系统 [Template System]" <<TEMPLATE>> #lightgreen {
+    rectangle "基础模板 [Basic Templates]" as basic_templates
+    rectangle "审批模板 [Approval Templates]" as approval_templates
+    rectangle "互联网模板 [Internet Templates]" as internet_templates
+    rectangle "软件模板 [Software Templates]" as software_templates
+    rectangle "架构模板 [Architecture Templates]" as arch_templates
+    rectangle "营销/管理模板 [Marketing]" as mgmt_templates
+}
+
+' === 导入导出层 ===
+rectangle "导入导出 [Import/Export]" <<IO>> #lightpink {
+    rectangle "JSON格式 [JSON Format]" as json_format
+    rectangle "PNG导出 [PNG Export]" as png_export
+    rectangle "SVG导出 [SVG Export]" as svg_export
+}
+
+' === 外部依赖层 ===
+rectangle "外部依赖 [External Dependencies]" <<DEPS>> #lightgray {
+    rectangle "React 19 [UI Framework]" as react
+    rectangle "TypeScript [Type System]" as typescript
+    rectangle "Zod [Schema Validation]" as zod
+    rectangle "Lucide [Icons]" as lucide
+    rectangle "Next.js [SSR Framework]" as nextjs
+}
+
+' === 基础设施层 ===
+rectangle "基础设施 [Infrastructure]" <<INFRA>> #whitesmoke {
+    rectangle "Node.js运行时 [Node Runtime]" as node_runtime
+    rectangle "开发工具链 [Dev Tools]" as dev_tools
+}
+
+' 依赖关系 - 从左到右的价值链
+ui ..> editor_core : 使用
+editor_core ..> template_system : 提供
+template_system ..> import_export : 支持
+import_export ..> external_deps : 依赖
+external_deps ..> infrastructure : 运行
+
+' 演进轴标注
+note bottom of ui
+<b>演进轴 (Evolution Axis)</b>
+[定制开发] ----> [产品化] ----> [商品化] ----> [Commoditized]
+<b>价值链 (Value Chain)</b>
+[用户需求] <--- [UI层] <--- [核心层] <--- [功能层] ---> [基础设施]
+end note
+
+' 图例
+legend right
+|= 图层 |= 演进程度 | 说明 |
+| <back:#lightblue>用户界面</back> | 高度定制 | 前端展示与交互 |
+| <back:#lightyellow>编辑器核心</back> | 定制开发 | 核心业务逻辑 |
+| <back:#lightgreen>模板系统</back> | 可复用 | 业务功能封装 |
+| <back:#lightpink>导入导出</back> | 标准化 | 数据交换格式 |
+| <back:#lightgray>外部依赖</back> | 商品化 | 开源框架/库 |
+| <back:#whitesmoke>基础设施</back> | Commoditized | 运行环境 |
+endlegend
+
+note as N1
+<b>Wardley Map - 工作流编辑器项目架构</b>
+
+横轴：价值链（从用户到基础设施）
+纵轴：演进程度（从定制到 commoditized）
+箭头：依赖关系
+end note
+
+@enduml
