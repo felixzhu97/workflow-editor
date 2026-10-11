@@ -93,14 +93,24 @@ pnpm dev
 
 ## 贡献指南
 
-欢迎提交Pull Request，请确保：
+See [CONTRIBUTING.md](CONTRIBUTING.md). 欢迎提交Pull Request，请确保：
 1. 代码符合项目风格
 2. 通过ESLint检查
 3. 添加必要的测试
 4. 更新相关文档(包括README和docs目录下的文件)
+
+Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### 模板贡献
 1. Fork项目并创建新分支
 2. 在`components/templates/`下对应分类文件中添加模板
 3. 提供模板描述和使用场景说明
 4. 提交Pull Request并描述模板用途
+
+## Security
+
+Report vulnerabilities as described in [SECURITY.md](SECURITY.md).
+
+## License
+
+[MIT](LICENSE) © 2026 Felix
