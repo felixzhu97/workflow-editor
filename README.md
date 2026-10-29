@@ -113,4 +113,4 @@ Report vulnerabilities as described in [SECURITY.md](SECURITY.md).
 
 ## License
 
-[MIT](LICENSE) © 2026 Felix
+[Apache-2.0](LICENSE) © 2026 Felix Zhu
